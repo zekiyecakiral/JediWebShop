@@ -1,0 +1,8 @@
+{
+  "env": {
+    "DB_USER": "zekiye",
+    "DB_PASSWORD": "zekiyeburak",
+    "DB_NAME": "pon",
+    "JWT_KEY":"supersecret_dont_share"
+  }
+}

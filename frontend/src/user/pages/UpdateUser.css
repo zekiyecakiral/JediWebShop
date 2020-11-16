@@ -1,0 +1,27 @@
+.container-edit-profile {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  border-radius: 6px;
+  max-width: 40rem;
+  margin: 1rem auto;
+  background-color: white;
+  padding: 10px;
+}
+
+.user-container-profile {
+  margin: 10px;
+}
+.user-button {
+  display: flex;
+  justify-content: flex-end;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.success {
+  margin: 10px;
+}

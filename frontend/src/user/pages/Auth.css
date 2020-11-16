@@ -1,0 +1,92 @@
+.authentication__header {
+  color: white;
+  text-align: center;
+}
+
+.authentication {
+  width: 90%;
+  max-width: 25rem;
+  margin: 7rem auto;
+  text-align: center;
+}
+
+.authentication form {
+  margin-bottom: 1rem;
+}
+
+.auth-form{
+  /* display: flex;
+  flex-direction: column;
+  
+  width: calc(65% - 2rem);
+  margin: 1rem; */
+  position: relative;
+  margin: 0;
+  padding: 1rem;
+  overflow: hidden;
+  background: white;
+}
+
+.auth-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-background
+{
+justify-content: center;
+min-height: 30vh;
+padding: 20px;
+}
+
+.paper{
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background-color: white;
+}
+.avatar-lock {
+  background-color: red !important;
+}
+.header{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.hr-sect {
+  display: flex;
+  flex-basis: 100%;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.35);
+  margin: 8px 0px;
+}
+.hr-sect:before,
+.hr-sect:after {
+  content: "";
+  flex-grow: 1;
+  background: rgba(0, 0, 0, 0.35);
+  height: 1px;
+  font-size: 0px;
+  line-height: 0px;
+  margin: 0px 8px;
+}
+.signin-alternative{
+  display: flex;
+  flex-direction: column;
+  flex-wrap:wrap;
+/*   width: 357px */
+}
+/* make facebook button same as google login button */
+div.signin-alternative > span > button {  
+ width: 100%;
+ text-align: left;
+ text-transform: inherit;
+}
+
+
+.footer-button{
+  display: flex;
+  justify-content: space-between;
+}

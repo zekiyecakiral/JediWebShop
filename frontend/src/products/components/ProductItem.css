@@ -1,0 +1,115 @@
+.place-item {
+    margin: 1rem 0;
+    padding: 5px;
+  }
+  
+  .map-container {
+    height: 15rem;
+    width: 100%;
+  }
+  
+  .item-info-part-place{
+    display:none
+  }
+  
+  .place-item-container-place:hover .item-info-part-place {
+    display:block;
+    background-color: white;
+    width: 34vw;
+    height: 20vw;
+  }
+  
+  /* star rating */
+  .star-rating{
+    width: fit-content;
+    position: absolute;
+    top: 10px;
+    left: 100px;
+    padding: .6rem;
+    border: 1px solid #ffc107;
+    /* display: flex;
+    justify-content: space-between;
+    align-items: center; */
+    /* height: 40px !important; */
+    background-color: rgba(61, 67, 87, 0.815);
+    color: yellow;
+    border-radius: 20px;
+  }
+  .rating-total{
+    text-align: center;
+    font-size: 0.4rem;
+    margin-right: 0.8rem;
+  }
+  .rating-total span{
+    font-size: 1rem;
+  }
+  
+  .item-rating{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 13px;
+  }
+   .MuiBox-root{
+    margin-left: 1px;
+  }
+   .rating-total {
+    font-size: 0.6rem;
+  }
+
+
+  /* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  .item-info-part-place{
+    display:none;
+  }
+  
+  .place-item-container-place:hover .item-info-part-place {
+    display: block;
+    width: 100%;
+    background-color: white;
+    height: 100%;
+  }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  .item-info-part-place{
+    display:none;
+  }
+  
+  .place-item-container-place:hover .item-info-part-place {
+    display: block;
+    width: 100%;
+    background-color: white;
+    height: 100%;
+  }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  .item-info-part-place{
+    display:none;
+  }
+  
+  .place-item-container-place:hover .item-info-part-place {
+    display: block;
+    width: 100%;
+    background-color: white;
+    height: 100%;
+  }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  .item-info-part-place{
+    display:none;
+  }
+  
+  .place-item-container-place:hover .item-info-part-place {
+    display: block;
+    width: 100%;
+    background-color: white;
+    height: 100%;
+  }
+}

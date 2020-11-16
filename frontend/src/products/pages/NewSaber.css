@@ -1,0 +1,33 @@
+.select-product-option{
+z-index: 5;
+}
+
+.place-form {
+    position: relative;
+    list-style: none;
+    margin: 20px auto;
+    padding: 1rem;
+    width: 90%;
+    max-width: 40rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    border-radius: 6px;
+    background: white;
+  }
+  
+  
+  .place-form-edit {
+    position: relative;
+    list-style: none;
+    margin: 0 auto;
+    margin-top: 30px;
+    padding: 1rem;
+    width: 90%;
+    max-width: 40rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    border-radius: 6px;
+    background: white;
+  }
+  .button-edit-form{
+    display: flex;
+    justify-content: flex-end;
+  }
