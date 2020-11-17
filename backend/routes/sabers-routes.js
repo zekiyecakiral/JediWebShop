@@ -5,10 +5,14 @@ const checkAuth = require('../middleware/check-auth');
 
 const router = express.Router();
 
-router.get('/', sabersControllers.getAllSabers);
+
+
+router.get('/allSabers/:uid', sabersControllers.getAllSabers);
 router.get('/:id', sabersControllers.getSaberById);
 
+
 router.use(checkAuth);
+
 
 router.post(
   '/',

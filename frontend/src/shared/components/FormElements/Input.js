@@ -1,6 +1,5 @@
 import React, { useReducer, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
-
 import { validate } from '../../util/validators';
 import './Input.css';
 

@@ -10,12 +10,15 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "axios": "^0.21.0",
+    "draft-js": "^0.11.7",
     "fetch-timeout": "0.0.2",
     "mapbox-gl": "^1.12.0",
     "material-ui-popup-state": "^1.7.0",
     "node-fetch": "^2.6.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "prismjs": "^1.22.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "react-facebook-login": "^4.1.1",
     "react-fullpage": "^0.1.19",
     "react-google-login": "^5.1.21",
@@ -26,7 +29,9 @@
     "react-scripts": "3.4.3",
     "react-select": "^3.1.0",
     "react-transition-group": "^4.4.1",
-    "uuid": "^8.3.1"
+    "react-xml-parser": "^1.1.8",
+    "uuid": "^8.3.1",
+    "xml2js": "^0.4.23"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -48,5 +53,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "prettier": "2.1.2"
   }
 }

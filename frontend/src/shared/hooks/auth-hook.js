@@ -9,28 +9,6 @@ export const useAuth = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const[force,setForce] = useState();
 
-  const[saberCarts,setSaberCarts]=useState([]);
-
-
-  const onAddToCart = useCallback((saber) => {
-
-     setSaberCarts([...saberCarts,saber])
-
-    console.log('onAddtocart');
-    console.log('add cart',saber);
-
-
-  }, []);
-  
-
-  const onRemoveFromCart = useCallback((saber) => {
-
-    setSaberCarts(saberCarts.splice(saber, 1))
-   console.log('remove cart',saber);
-
-
- }, []);
-
   const login = useCallback((uid, token, isAdmin,force, expirationDate) => {
     setToken(token);
     setUserId(uid);
@@ -84,5 +62,5 @@ export const useAuth = () => {
 
   }, [login]);
 
-  return { token, login, logout, userId, isAdmin,force,onAddToCart,onRemoveFromCart,saberCarts };
+  return { token, login, logout, userId, isAdmin,force };
 };

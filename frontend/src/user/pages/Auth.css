@@ -15,11 +15,6 @@
 }
 
 .auth-form{
-  /* display: flex;
-  flex-direction: column;
-  
-  width: calc(65% - 2rem);
-  margin: 1rem; */
   position: relative;
   margin: 0;
   padding: 1rem;

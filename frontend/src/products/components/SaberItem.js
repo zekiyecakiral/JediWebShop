@@ -1,11 +1,10 @@
 import React, { useState, useContext } from 'react';
-import {  NavLink,useHistory } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 import Modal from '../../shared/components/UIElements/Modal';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import { AuthContext } from '../../shared/context/auth-context';
 import { useHttpClient } from '../../shared/hooks/http-hook';
-import { useCalculate } from '../../shared/hooks/calculate-hook';
-import { makeStyles } from '@material-ui/core/styles';
 import { red } from '@material-ui/core/colors';
 import {
   Card,
@@ -42,8 +41,6 @@ const SaberItem = (props) => {
   const auth = useContext(AuthContext);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
- const {price}=useCalculate(props.crystal.harvestedAmount,props.crystal.forcePercentage)
-
   const showDeleteWarningHandler = () => {
     setShowConfirmModal(true);
   };
@@ -67,25 +64,26 @@ const SaberItem = (props) => {
     } catch (err) {}
   };
 
-const orderItem = async () =>{
+  const orderItem = async () => {
+    console.log('order yap', props.price);
 
-  try {
-    await sendRequest(
-      `${process.env.REACT_APP_BACKEND_URL}/order/saber/${props.id}`,
-      'POST',
-      JSON.stringify({
-        price: price,
-      }),
-      {
-        Authorization: 'Bearer ' + auth.token,
-        'Content-Type': 'application/json'
-      }
-    );
-    history.push(`/saber/order`);
-  } catch (err) {}
+    try {
+      await sendRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/order/saber/${props.id}`,
+        'POST',
+        JSON.stringify({
+          price: props.price,
+        }),
+        {
+          Authorization: 'Bearer ' + auth.token,
+          'Content-Type': 'application/json',
+        }
+      );
 
-}
-
+      history.push(`/saber/order`);
+    } catch (err) {}
+  };
+  console.log('price', props.price);
 
   return (
     <React.Fragment>
@@ -138,12 +136,16 @@ const orderItem = async () =>{
                 <Typography variant='body2' color='textSecondary' component='p'>
                   Crystal Color: {props.crystal.color}
                 </Typography>
-                {!auth.isAdmin && 
-                   <Typography variant='body2' gutterBottom>
-                   Price : $$ {price}
-                 </Typography>
-                }
-             
+                {auth.isAdmin && (
+                  <Typography variant='body2' color='textSecondary' component='p'>
+                    Available : {props.available}
+                  </Typography>
+                )}
+                {!auth.isAdmin && (
+                  <Typography variant='body2' gutterBottom>
+                    Price : $$ {props.price}
+                  </Typography>
+                )}
               </CardContent>
               <CardActions>
                 {auth.isAdmin && (
@@ -164,20 +166,20 @@ const orderItem = async () =>{
                     color='secondary'
                     onClick={showDeleteWarningHandler}
                     className={classes.button}
-                  
                   >
                     DELETE
                   </Button>
                 )}
-                {!auth.isAdmin && 
-                  (<Button
+                {!auth.isAdmin && (
+                  <Button
                     variant='contained'
                     color='secondary'
                     onClick={orderItem}
                     className={classes.button}
                   >
                     Order
-                  </Button>)}
+                  </Button>
+                )}
               </CardActions>
             </div>
           </CardMedia>

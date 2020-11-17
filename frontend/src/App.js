@@ -10,7 +10,7 @@ import MainNavigation from './shared/components/Navigation/MainNavigation';
 import { AuthContext } from './shared/context/auth-context';
 import { useAuth } from './shared/hooks/auth-hook';
 import LoadingSpinner from './shared/components/UIElements/LoadingSpinner';
-
+const Calculate = React.lazy(() => import('./products/pages/Calculate'));
 const UpdateUser = React.lazy(() => import('./user/pages/UpdateUser'));
 const NewSaber = React.lazy(() => import('./products/pages/NewSaber'));
 const NewCrystal = React.lazy(() => import('./products/pages/NewCrystal'));
@@ -32,10 +32,12 @@ const App = () => {
         <Route path='/' exact>
         <Sabers />
         </Route>
+        <Route path='/calculate' exact>
+          <Calculate />
+        </Route>
         <Route path='/saber/order' exact>
           <Order />
         </Route>
-  
         <Route path='/sabers/new' exact>
           <NewSaber />
         </Route>

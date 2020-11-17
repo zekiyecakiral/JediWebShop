@@ -123,6 +123,19 @@ const MainNavigation = (props) => {
 
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
+
+          {auth.isLoggedIn && auth.isAdmin &&  (
+              <Button
+                color='inherit'
+                component={NavLink}
+                to={{
+                  pathname: `/calculate`,
+                }}
+              >
+                Calculate
+              </Button>
+            )}
+
             {auth.isLoggedIn && (
               <Button
                 color='inherit'

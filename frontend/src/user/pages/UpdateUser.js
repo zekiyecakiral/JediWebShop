@@ -76,18 +76,19 @@ const UpdateUser = () => {
   const userUpdateSubmitHandler = async (event) => {
     event.preventDefault();
     try {
-      const formData = new FormData();
-      formData.append('name', formState.inputs.name.value);
-      formData.append('age', formState.inputs.age.value);
-
       const responseData = await sendRequest(
         `${process.env.REACT_APP_BACKEND_URL}/users/${userId}`,
         'PATCH',
-        formData,
+        JSON.stringify({
+          name: formState.inputs.name.value,
+          age:formState.inputs.age.value,
+        }),
         {
+          'Content-Type': 'application/json',
           Authorization: 'Bearer ' + auth.token,
         }
       );
+
       setLoadedUser(responseData.user);
 
       setSuccessModal(true);
@@ -123,7 +124,6 @@ const UpdateUser = () => {
             <form
               noValidate
               autoComplete='off'
-              className='place-form'
               onSubmit={userUpdateSubmitHandler}
             >
               <Typography variant='body2' color='textSecondary' component='p'>

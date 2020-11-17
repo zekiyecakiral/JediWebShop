@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const HttpError = require('../models/http-error');
 const Order = require('../models/order');
+const Saber = require('../models/saber');
+
 
 const createOrder = async (req, res, next) => {
   const saberId = req.params.id;
@@ -26,6 +28,39 @@ const createOrder = async (req, res, next) => {
     );
     return next(error);
   }
+  let saber;
+  try {
+    saber = await Saber.findById(saberId);
+  } catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not find a saber.',
+      500
+    );
+    return next(error);
+  }
+  saber.available= saber.available -1;
+
+  if(saber.available < 0){
+   const error = new HttpError(
+      'You can not order this saber, out of stock!',
+      500
+    );
+    return next(error);
+  }
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await saber.save({ session: sess });
+    await sess.commitTransaction();
+  } catch (err) {
+    console.log(err);
+
+    const error = new HttpError(
+      'Updating saber available failed, please try again.',
+      500
+    );
+    return next(error);
+  }
 
   result.populate('saberId', function (err) {
     res.status(201).json({
@@ -33,6 +68,9 @@ const createOrder = async (req, res, next) => {
       lightsabername: result.saberId.name,
     });
   });
+
+
+
 };
 
 const getOrdersByUserId = async (req, res, next) => {

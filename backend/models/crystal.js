@@ -10,4 +10,6 @@ const crystalSchema = new Schema({
   harvestedAmount: { type: Number, require: true },
 });
 
+crystalSchema.index({ color: 1, name: 1 }, { unique: true });
+
 module.exports = mongoose.model('Crystal', crystalSchema);

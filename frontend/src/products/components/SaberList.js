@@ -31,14 +31,15 @@ const SaberList = props => {
     <ul className="user-place-list">
       {props.items.map(saber => (
         <SaberItem
-          key={saber.id}
-          id={saber.id}
+          key={saber._id}
+          id={saber._id}
           image={saber.image}
           name={saber.name}
           saberId={saber.saberId}
           available={saber.available}
           crystal={saber.crystal}
           onDelete={props.onDeleteSaber}
+          price={saber.price}
         />
       ))}
     </ul>

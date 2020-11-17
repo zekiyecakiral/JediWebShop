@@ -9,6 +9,9 @@ const usersRoutes = require('./routes/users-routes');
 const sabersRoutes = require('./routes/sabers-routes');
 const crystalsRoutes = require('./routes/crystals-routes');
 const ordersRoutes = require('./routes/orders-routes');
+const calculateRoutes = require('./routes/calculate-routes');
+
+const fileUpload = require('express-fileupload');
 
 const HttpError = require('./models/http-error');
 
@@ -29,6 +32,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(fileUpload());
 
 app.use('/Jedisabershop/users', usersRoutes);
 
@@ -37,6 +41,8 @@ app.use('/Jedisabershop/users', usersRoutes);
 app.use('/Jedisabershop/crystal', crystalsRoutes);
 
 app.use('/Jedisabershop/order/saber', ordersRoutes);
+
+app.use('/Jedisabershop/calculate', calculateRoutes);
 
 
 app.use((req, res, next) => {

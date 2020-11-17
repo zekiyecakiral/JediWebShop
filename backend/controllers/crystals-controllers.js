@@ -15,8 +15,6 @@ const createCrystal = async (req, res, next) => {
 
   const { name, color,planet, forcePercentage, harvestedAmount } = req.body;
 
-
-
   let crystal;
   try {
     crystal = await Crystal.findOne({ color: color });

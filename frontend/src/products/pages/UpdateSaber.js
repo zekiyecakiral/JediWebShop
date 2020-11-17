@@ -13,7 +13,7 @@ import { AuthContext } from '../../shared/context/auth-context';
 import { Button, Card, CardContent } from '@material-ui/core';
 import Modal from '../../shared/components/UIElements/Modal';
 
-import './NewSaber.css';
+// import './NewSaber.css';
 
 const UpdateSaber = () => {
   const auth = useContext(AuthContext);
@@ -95,9 +95,6 @@ const UpdateSaber = () => {
       formData.append('available', formState.inputs.available.value);
       formData.append('image', formState.inputs.image.value);
 
-
-      console.log('update et!',saberId);
-
        const responseData  = await sendRequest(
         `${process.env.REACT_APP_BACKEND_URL}/saber/${saberId}`,
         'PATCH',
@@ -106,7 +103,6 @@ const UpdateSaber = () => {
           Authorization: 'Bearer ' + auth.token,
         }
       );
-      console.log(responseData);
       setLoadedSaber(responseData.saber);
       setSaberUpdate((prev) => !prev);
       setSuccessModal(true);
@@ -151,7 +147,7 @@ const UpdateSaber = () => {
         </div>
       </Modal>
       {!isLoading && loadedSaber && (
-        <Card className='place-form-edit'>
+        <Card >
           <CardContent>
             <form onSubmit={saberUpdateSubmitHandler}>
 
