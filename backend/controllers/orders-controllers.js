@@ -2,16 +2,47 @@ const mongoose = require('mongoose');
 const HttpError = require('../models/http-error');
 const Order = require('../models/order');
 const Saber = require('../models/saber');
+const User = require('../models/user');
 
+const calculateSaber = require('../util/calculateSaber');
 
 const createOrder = async (req, res, next) => {
+
   const saberId = req.params.id;
-  const { price } = req.body;
+
+  let saber;
+  try {
+    saber = await Saber.findOne({ saberId: saberId }).populate('crystal');
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError(
+      'Something went wrong, could not find sabers.',
+      500
+    );
+    return next(error);
+  }
+
+  let user;
+  try {
+    user = await User.findById(req.userData.userId);
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError(
+      'Something went wrong, could not find user saber.',
+      500
+    );
+    return next(error);
+  }
+
+  //Calculate price for this order
+  const calculateSaberResult = calculateSaber(user.age, saber.crystal);
+  const price = calculateSaberResult.price;
+
 
   const createdOrder = new Order({
     userId: req.userData.userId,
-    saberId,
-    price,
+    saberId:saber.id,
+    price:price,
     createdAt: Date.now(),
   });
 
@@ -22,26 +53,19 @@ const createOrder = async (req, res, next) => {
     result = await createdOrder.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {
+    console.log(err)
     const error = new HttpError(
       'Creating order failed, please try again.',
       500
     );
     return next(error);
   }
-  let saber;
-  try {
-    saber = await Saber.findById(saberId);
-  } catch (err) {
-    const error = new HttpError(
-      'Something went wrong, could not find a saber.',
-      500
-    );
-    return next(error);
-  }
-  saber.available= saber.available -1;
 
-  if(saber.available < 0){
-   const error = new HttpError(
+  //after buy this order, reduce available!
+
+  saber.available = saber.available - 1;
+  if (saber.available < 0) {
+    const error = new HttpError(
       'You can not order this saber, out of stock!',
       500
     );
@@ -61,41 +85,35 @@ const createOrder = async (req, res, next) => {
     );
     return next(error);
   }
-
   result.populate('saberId', function (err) {
     res.status(201).json({
       message: 'order successfull',
       lightsabername: result.saberId.name,
     });
   });
-
-
-
 };
 
 const getOrdersByUserId = async (req, res, next) => {
   console.log('get order by id');
-  const userId = req.params.uid;
+  const userId = req.userData.userId;
   console.log('userId', userId);
 
-
   try {
-    await Order.find({ userId: userId }).lean()
-    .populate({ path: 'saberId userId' })
-    .exec(function(err, docs) {
-  
-      var options = {
-        path: 'saberId.crystal',
-        model: 'Crystal'
-      };
-  
-      if (err) return res.json(500);
-      Order.populate(docs, options, function (err, projects) {
+    await Order.find({ userId: userId })
+      .lean()
+      .populate({ path: 'saberId userId' })
+      .exec(function (err, docs) {
+        var options = {
+          path: 'saberId.crystal',
+          model: 'Crystal',
+        };
 
-        console.log('proo',projects);
-         res.json({ orders: projects });
+        if (err) return res.json(500);
+
+        Order.populate(docs, options, function (err, projects) {
+          res.json({ orders: projects });
+        });
       });
-    });
   } catch (err) {
     const error = new HttpError(
       'Something went wrong, could not find an order.',
@@ -103,29 +121,25 @@ const getOrdersByUserId = async (req, res, next) => {
     );
     return next(error);
   }
-
-
 };
 
 const getAllOrders = async (req, res, next) => {
   try {
     await Order.find({})
-    .lean()
-    .populate({ path: 'saberId userId' })
-    .exec(function(err, docs) {
-  
-      var options = {
-        path: 'saberId.crystal',
-        model: 'Crystal'
-      };
-  
-      if (err) return res.json(500);
-      Order.populate(docs, options, function (err, projects) {
+      .lean()
+      .populate({ path: 'saberId userId' })
+      .exec(function (err, docs) {
+        var options = {
+          path: 'saberId.crystal',
+          model: 'Crystal',
+        };
 
-        console.log('proo',projects);
-         res.json({ orders: projects });
+        if (err) return res.json(500);
+        Order.populate(docs, options, function (err, projects) {
+          console.log('proo', projects);
+          res.json({ orders: projects });
+        });
       });
-    });
   } catch (err) {
     const error = new HttpError(
       'Something went wrong, could not find orders.',
@@ -133,15 +147,6 @@ const getAllOrders = async (req, res, next) => {
     );
     return next(error);
   }
-
-//   console.log('all orders', orders);
-
-//   if (!orders) {
-//     const error = new HttpError('Could not find orders', 404);
-//     return next(error);
-//   }
-
-//   res.json({ orders: orders });
 };
 
 exports.createOrder = createOrder;

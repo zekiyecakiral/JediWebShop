@@ -1,4 +1,4 @@
-function calculateSaber(age, crystal) {
+function calculateSaber(age, crystal = null) {
   const degreeEnum = {
     PADAWAN: 'Padawan',
     JEDI: 'Jedi',
@@ -8,9 +8,6 @@ function calculateSaber(age, crystal) {
   if (age < 0) {
     age = 0;
   }
-
-  const harvestedAmount = crystal.harvestedAmount;
-  const forcePercentage = crystal.forcePercentage;
   const increasingForceByYear = 10;
   let force = increasingForceByYear * age;
   force = Math.round((force + Number.EPSILON) * 100) / 100;
@@ -24,6 +21,19 @@ function calculateSaber(age, crystal) {
     degree = degreeEnum.JEDI_NO_POWER;
   }
 
+  if (!crystal) {
+    if (age >= 18) {
+      force = 'unlimited';
+    }
+    
+    return {
+      force: force,
+      degree: degree
+    };
+  }
+
+  const harvestedAmount = crystal.harvestedAmount;
+  const forcePercentage = crystal.forcePercentage;
   let powerUsage = (force * forcePercentage) / 100;
   powerUsage = Math.round((powerUsage + Number.EPSILON) * 100) / 100;
   let priceResult = harvestedAmount * powerUsage;
@@ -38,7 +48,7 @@ function calculateSaber(age, crystal) {
     powerUsage = 'NaN ';
   }
 
-  result = {
+  const result = {
     price: priceResult,
     powerUsage: powerUsage,
     force: force,

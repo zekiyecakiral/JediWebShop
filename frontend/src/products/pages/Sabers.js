@@ -18,7 +18,12 @@ const Sabers = () => {
     const fetchPlaces = async () => {
       try {
         const responseData = await sendRequest(
-          `${process.env.REACT_APP_BACKEND_URL}/saber/allSabers/${userId}`
+          `${process.env.REACT_APP_BACKEND_URL}/saber/allSabers`,
+          'GET',null,
+
+          {
+            Authorization: 'Bearer ' + auth.token,
+          }
         );
         setLoadedSabers(responseData.sabers);
 
@@ -30,8 +35,9 @@ const Sabers = () => {
   }, [sendRequest, userId]);
 
   const saberDeletedHandler = deletedSaberId => {
+
     setLoadedSabers(prevSabers =>
-      prevSabers.filter(saber => saber.id !== deletedSaberId)
+      prevSabers.filter(saber => saber._id !== deletedSaberId)
     );
   };
 

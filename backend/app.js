@@ -17,9 +17,8 @@ const HttpError = require('./models/http-error');
 
 const app = express();
 
-app.use(bodyParser.json());
 
-app.use('/uploads/images', express.static(path.join('uploads', 'images')));
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -32,17 +31,20 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(fileUpload());
-
 app.use('/Jedisabershop/users', usersRoutes);
 
- app.use('/Jedisabershop/saber', sabersRoutes);
+
+app.use('/uploads/images', express.static(path.join('uploads', 'images')));
+app.use('/Jedisabershop/saber', sabersRoutes);
 
 app.use('/Jedisabershop/crystal', crystalsRoutes);
 
 app.use('/Jedisabershop/order/saber', ordersRoutes);
 
+
+app.use(fileUpload());
 app.use('/Jedisabershop/calculate', calculateRoutes);
+
 
 
 app.use((req, res, next) => {

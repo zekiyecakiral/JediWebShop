@@ -21,11 +21,17 @@ export const useHttpClient = () => {
           signal: httpAbortCtrl.signal
         },timeout);
 
+        if(response.status === 205){
+          window.location.reload(); //TODO
+          return;
+        }
+
         const responseData = await response.json();
    
         activeHttpRequests.current = activeHttpRequests.current.filter(
           reqCtrl => reqCtrl !== httpAbortCtrl
         );
+
 
         if (!response.ok) {
           throw new Error(responseData.message);

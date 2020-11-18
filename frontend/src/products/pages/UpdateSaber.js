@@ -1,19 +1,19 @@
 import React, { useEffect, useState, useContext } from 'react';
+import axios from 'axios';
+
 import { useParams } from 'react-router-dom';
 import Input from '../../shared/components/FormElements/Input';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
-import {
-  VALIDATOR_REQUIRE,
-} from '../../shared/util/validators';
+import { VALIDATOR_REQUIRE } from '../../shared/util/validators';
 import { useForm } from '../../shared/hooks/form-hook';
 import { useHttpClient } from '../../shared/hooks/http-hook';
 import { AuthContext } from '../../shared/context/auth-context';
 import { Button, Card, CardContent } from '@material-ui/core';
 import Modal from '../../shared/components/UIElements/Modal';
 
-// import './NewSaber.css';
+import './UpdateSaber.css';
 
 const UpdateSaber = () => {
   const auth = useContext(AuthContext);
@@ -21,13 +21,9 @@ const UpdateSaber = () => {
   const [loadedSaber, setLoadedSaber] = useState();
   const [successModal, setSuccessModal] = useState(false);
   const saberId = useParams().saberId;
- const [saberUpdate,setSaberUpdate]=useState(false);
+  const [saberUpdate, setSaberUpdate] = useState(false);
   const [formState, inputHandler, setFormData] = useForm(
     {
-      id: {
-        value: '',
-        isValid: false,
-      },
       name: {
         value: '',
         isValid: false,
@@ -51,8 +47,15 @@ const UpdateSaber = () => {
   useEffect(() => {
     const fetchSaber = async () => {
       try {
+        console.log('update etcem');
+
         const responseData = await sendRequest(
-          `${process.env.REACT_APP_BACKEND_URL}/saber/${saberId}`
+          `${process.env.REACT_APP_BACKEND_URL}/saber/${saberId}`,
+          'GET',
+          null,
+          {
+            Authorization: 'Bearer ' + auth.token,
+          }
         );
 
         console.log('updateproduct ', responseData);
@@ -60,11 +63,6 @@ const UpdateSaber = () => {
         setLoadedSaber(responseData.saber);
         setFormData(
           {
-            id: {
-              value: responseData.saber.saberId,
-              isValid: true,
-            },
-
             name: {
               value: responseData.saber.name,
               isValid: true,
@@ -83,22 +81,20 @@ const UpdateSaber = () => {
       } catch (err) {}
     };
     fetchSaber();
-  }, [sendRequest, saberId, setFormData,saberUpdate]);
+  }, [sendRequest, saberId, setFormData, saberUpdate]);
 
   const saberUpdateSubmitHandler = async (event) => {
     event.preventDefault();
     try {
-
       const formData = new FormData();
-      formData.append('id', formState.inputs.id.value);
       formData.append('name', formState.inputs.name.value);
       formData.append('available', formState.inputs.available.value);
       formData.append('image', formState.inputs.image.value);
 
-       const responseData  = await sendRequest(
+      const responseData = await sendRequest(
         `${process.env.REACT_APP_BACKEND_URL}/saber/${saberId}`,
         'PATCH',
-       formData,
+        formData,
         {
           Authorization: 'Bearer ' + auth.token,
         }
@@ -147,69 +143,63 @@ const UpdateSaber = () => {
         </div>
       </Modal>
       {!isLoading && loadedSaber && (
-        <Card >
-          <CardContent>
-            <form onSubmit={saberUpdateSubmitHandler}>
-
-              <ImageUpload
-                id='image'
-                onInput={inputHandler}
-                errorText='Please provide an image.'
-                text="Update Image"
-                initialValue={`${process.env.REACT_APP_ASSET_URL}/${loadedSaber.image}`}
-              />
-
-                <Input
-                id='id'
-                element='input'
-                type='text'
-                label='ID'
-                fullWidth
-                validators={[VALIDATOR_REQUIRE()]}
-                errorText='Please enter a valid name.'
-                onInput={inputHandler}
-                initialValue={loadedSaber.saberId}
-                initialValid={true}
-              />
-
-              <Input
-                id='name'
-                element='input'
-                type='text'
-                label='Product Name'
-                fullWidth
-                validators={[VALIDATOR_REQUIRE()]}
-                errorText='Please enter a valid name.'
-                onInput={inputHandler}
-                initialValue={loadedSaber.name}
-                initialValid={true}
-              />
-              <Input
-                id='available'
-                element='input'
-                type='text'
-                label='Available'
-                fullWidth
-                validators={[VALIDATOR_REQUIRE()]}
-                errorText='Please enter a valid available.'
-                onInput={inputHandler}
-                initialValue={loadedSaber.available}
-                initialValid={true}
-              />
-
-              <div className='button-edit-form'>
-                <Button
-                  type='submit'
-                  variant='contained'
-                  color='primary'
-                  disabled={!formState.isValid}
+        <div className='container-edit-profile'>
+          <div className='user-container-profile'>
+            <Card>
+              <CardContent>
+                <form
+                  className='update-saber-form'
+                  onSubmit={saberUpdateSubmitHandler}
                 >
-                  UPDATE SABER
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+                  <div className='update-saber-form-image'>
+                    <ImageUpload
+                      id='image'
+                      onInput={inputHandler}
+                      errorText='Please provide an image.'
+                      text='Upload Image'
+                      initialValue={`${process.env.REACT_APP_ASSET_URL}/${loadedSaber.image}`}
+                    />
+                  </div>
+                  <Input
+                    id='name'
+                    element='input'
+                    type='text'
+                    label='Product Name'
+                    fullWidth
+                    validators={[VALIDATOR_REQUIRE()]}
+                    errorText='Please enter a valid name.'
+                    onInput={inputHandler}
+                    initialValue={loadedSaber.name}
+                    initialValid={true}
+                  />
+                  <Input
+                    id='available'
+                    element='input'
+                    type='text'
+                    label='Available'
+                    fullWidth
+                    validators={[VALIDATOR_REQUIRE()]}
+                    errorText='Please enter a valid available.'
+                    onInput={inputHandler}
+                    initialValue={loadedSaber.available}
+                    initialValid={true}
+                  />
+
+                  <div className='button-edit-form'>
+                    <Button
+                      type='submit'
+                      variant='contained'
+                      color='primary'
+                      disabled={!formState.isValid}
+                    >
+                      UPDATE SABER
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       )}
     </React.Fragment>
   );

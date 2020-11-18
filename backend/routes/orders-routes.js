@@ -5,11 +5,11 @@ const checkAuth = require('../middleware/check-auth');
 const router = express.Router();
 
 
+router.use(checkAuth);
+
 router.get('/', ordersControllers.getAllOrders);
 
-router.get('/:uid', ordersControllers.getOrdersByUserId);
-
-router.use(checkAuth);
+router.get('/', ordersControllers.getOrdersByUserId);
 
 router.post(
   '/:id',

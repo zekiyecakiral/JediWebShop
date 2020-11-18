@@ -69,14 +69,11 @@ const SaberItem = (props) => {
 
     try {
       await sendRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/order/saber/${props.id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/order/saber/${props.saberId}`,
         'POST',
-        JSON.stringify({
-          price: props.price,
-        }),
+        null,
         {
           Authorization: 'Bearer ' + auth.token,
-          'Content-Type': 'application/json',
         }
       );
 
@@ -154,7 +151,7 @@ const SaberItem = (props) => {
                     color='primary'
                     component={NavLink}
                     to={{
-                      pathname: `/sabers/${props.id}`,
+                      pathname: `/sabers/${props.saberId}`,
                     }}
                   >
                     EDIT

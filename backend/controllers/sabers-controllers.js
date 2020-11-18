@@ -8,16 +8,14 @@ const User = require('../models/user');
 
 const calculateSaber = require('../util/calculateSaber');
 
-
 const getSaberById = async (req, res, next) => {
-
   const saberId = req.params.id;
 
   console.log('get saber by id', saberId);
 
   let saber;
   try {
-    saber = await Saber.findById(saberId);
+    saber = await Saber.findOne({saberId:saberId}).populate('crystal', 'name color planet');
   } catch (err) {
     const error = new HttpError(
       'Something went wrong, could not find a saber.',
@@ -25,8 +23,6 @@ const getSaberById = async (req, res, next) => {
     );
     return next(error);
   }
-
-  console.log(saber);
 
   if (!saber) {
     const error = new HttpError(
@@ -42,8 +38,8 @@ const getSaberById = async (req, res, next) => {
 const getAllSabers = async (req, res, next) => {
   console.log('getl all products');
 
-  const userId = req.params.uid;
-  console.log('userId',userId);
+  const userId =  req.userData.userId;
+  console.log('userId', userId);
 
   let sabers;
   try {
@@ -68,32 +64,30 @@ const getAllSabers = async (req, res, next) => {
     return next(error);
   }
 
-  console.log('user',user);
+  console.log('user', user);
 
+  if(!user.isAdmin){
 
-  // console.log('all sabers', sabers);
-
-  // for(let i = 0 ; i<sabers.length; i++){
-
-  //  const price = await getCalculatedPrice(user.age,sabers[i].crystal.harvestedAmount,sabers[i].crystal.forcePercentage)
-
-  //  console.log('price',price);
-
-  // }
-  const sabersWithPrice = sabers.map((saber) => {
-
-    const calculateSaberResult = calculateSaber(user.age,saber.crystal)
+    const sabersWithPrice = sabers.map((saber) => {
+      const calculateSaberResult = calculateSaber(user.age, saber.crystal);
+      const newPropsObj = {
+        price: calculateSaberResult.price,
+      };
+      return Object.assign(saber, newPropsObj);
+    });
   
-    const newPropsObj = {
-      price:calculateSaberResult.price
-    };
-    return Object.assign(saber, newPropsObj);
-  });
+    console.log('sabersWithPrice', sabersWithPrice);
+  
+    res.json({
+      sabers: sabersWithPrice,
+    });
 
-  console.log('sabersWithPrice',sabersWithPrice);
+  }else{
+    res.json({
+      sabers: sabers,
+    });
+  }
 
-  res.json({
-    sabers:sabersWithPrice});
 };
 
 const createSaber = async (req, res, next) => {
@@ -108,6 +102,7 @@ const createSaber = async (req, res, next) => {
 
   const { id, name, available, crystalId } = req.body;
 
+  console.log('cry id',crystalId,name);
   let crystal;
   try {
     crystal = await Crystal.findById(crystalId);
@@ -149,6 +144,168 @@ const createSaber = async (req, res, next) => {
 
   res.status(201).json({ saber: createdSaber });
 };
+const createXmlSabers = async (req, res, next) => {
+  console.log('created xml sabers');
+
+  const { sabers } = req.body;
+
+  console.log(sabers);
+
+  let errors = [];
+
+  try {
+    for (let i = 0; i < sabers.saber.length; i++) {
+      let saber = sabers.saber[i];
+      let crystal;
+
+      if (!saber.id && saber.id > 0) {
+        errors.push('SaberId ' + saber.id + ' is not valid!');
+        continue;
+      } else if (!saber.name) {
+        errors.push('SaberId ' + saber.id + ' has not name!');
+        continue;
+      }else if (!saber.available) {
+        errors.push('SaberId ' + saber.id + ' has not available!');
+        continue;
+      }  
+      else if (!saber.crystal.color) {
+        errors.push('SaberId ' + saber.id + ' has not color!');
+        continue;
+      } else if (!saber.crystal.name) {
+        errors.push('SaberId ' + saber.id + ' has not name!');
+        continue;
+      }
+      try {
+        crystal = await Crystal.findOne({
+          color: { $regex: saber.crystal.color, $options: 'i' },
+          name: { $regex: saber.crystal.name, $options: 'i' },
+        });
+      } catch (err) {
+        errors.push(
+          'SaberId ' +
+            saber.id +
+            ' => Something went wrong, could not find crystals.'
+        );
+        continue;
+      }
+
+      if (!crystal) {
+        let defaults = {};
+        defaults['red'] = {
+          color: 'Red',
+          planet: 'Ilum',
+          forcePercentage: 20,
+          harvestedAmount: 101,
+        };
+        defaults['blue'] = {
+          color: 'Blue',
+          planet: 'Dantooine',
+          forcePercentage: 19,
+          harvestedAmount: 10,
+        };
+        defaults['green'] = {
+          color: 'Green',
+          planet: 'Dagobah',
+          forcePercentage: 22,
+          harvestedAmount: 37,
+        };
+
+        if (defaults[saber.crystal.color.toLowerCase()]) {
+          crystalDefault = defaults[saber.crystal.color.toLowerCase()];
+
+          newCrystal = new Crystal({
+            color: crystalDefault.color,
+            name: saber.crystal.name,
+            planet: crystalDefault.planet,
+            forcePercentage: crystalDefault.forcePercentage,
+            harvestedAmount: crystalDefault.harvestedAmount,
+          });
+
+          try {
+            const sess = await mongoose.startSession();
+            sess.startTransaction();
+            await newCrystal.save({ session: sess });
+            await sess.commitTransaction();
+          } catch (err) {
+            errors.push(
+              'crystal color ' +
+                saber.crystal.color +
+                ' => Creating crystal color failed!'
+            );
+            continue;
+          }
+
+          crystal = newCrystal;
+        }
+
+        try {
+          crystal = await Crystal.findOne({
+            color: { $regex: saber.crystal.color, $options: 'i' },
+          });
+        } catch (err) {
+          errors.push(
+            'SaberId ' +
+              saber.id +
+              ' => Something went wrong, could not find crystals.'
+          );
+          continue;
+        }
+      }
+
+      if (!crystal) {
+        errors.push('SaberId ' + saber.id + ' => Please create new crystal!');
+        continue;
+      }
+
+      let saberExisted;
+      try {
+        saberExisted = await Saber.findOne({ saberId: saber.id });
+      } catch (err) {
+        errors.push(
+          'SaberId ' +
+            saber.id +
+            ' => Something went wrong, could not find a saber.'
+        );
+        continue;
+      }
+
+      if (saberExisted) {
+        console.log(saberExisted);
+        errors.push(
+          'SaberId ' + saber.id + ' => is already created in our system!'
+        );
+        continue;
+      }
+
+      const newSaber = new Saber({
+        saberId: saber.id,
+        name: saber.name,
+        available: saber.available,
+        crystal: crystal._id,
+      });
+
+      try {
+        const sess = await mongoose.startSession();
+        sess.startTransaction();
+        await newSaber.save({ session: sess });
+        await sess.commitTransaction();
+      } catch (err) {
+        errors.push(
+          'SaberId ' +
+            saber.id +
+            ' => Creating saber failed! Reason: ' +
+            err.message
+        );
+        continue;
+      }
+    }
+  } catch (error) {}
+
+  if (errors && errors.length > 0) {
+    const error = new HttpError(errors.join(', \n '), 404);
+    return next(error);
+  } else res.status(205).json({ message: 'saved all sabers.' });
+};
 
 const deleteSaber = async (req, res, next) => {
   const saberId = req.params.id;
@@ -185,17 +342,16 @@ const deleteSaber = async (req, res, next) => {
 };
 
 const updateSaber = async (req, res, next) => {
+
   console.log('update saberrrr');
-
-  const { id, name, available, crystalId } = req.body;
-
-  console.log('name', name);
-
   const saberId = req.params.id;
+  console.log('update saberrrr',saberId);
 
+  const { name, available } = req.body;
+  console.log('name',name);
   let saber;
   try {
-    saber = await Saber.findById(saberId);
+    saber = await Saber.findOne({saberId:saberId});
   } catch (err) {
     const error = new HttpError(
       'Something went wrong, could not update saber.',
@@ -204,11 +360,11 @@ const updateSaber = async (req, res, next) => {
     return next(error);
   }
 
-  saber.saberId = id;
   saber.name = name;
   saber.available = available;
-  saber.crystalId = crystalId;
-  saber.image = req.file.path;
+  if(req.file){
+    saber.image = req.file.path;
+  }
 
   try {
     await saber.save();
@@ -223,6 +379,7 @@ const updateSaber = async (req, res, next) => {
   res.status(200).json({ saber: saber.toObject({ getters: true }) });
 };
 
+exports.createXmlSabers = createXmlSabers;
 exports.createSaber = createSaber;
 exports.getAllSabers = getAllSabers;
 exports.getSaberById = getSaberById;

@@ -14,7 +14,12 @@ const Orders = (props) => {
     const fetchOrderByUserId = async () => {
       try {
         const responseData = await sendRequest(
-          `${process.env.REACT_APP_BACKEND_URL}/order/saber/${auth.userId}`
+          `${process.env.REACT_APP_BACKEND_URL}/order/saber`,
+          'GET',
+          null,
+          {
+            Authorization: 'Bearer ' + auth.token,
+          }
         );
         console.log(responseData);
         setOrders(responseData.orders);
@@ -24,7 +29,12 @@ const Orders = (props) => {
     const fetchAllOrders = async () => {
       try {
         const responseData = await sendRequest(
-          `${process.env.REACT_APP_BACKEND_URL}/order/saber`
+          `${process.env.REACT_APP_BACKEND_URL}/order/saber`,
+          'GET',
+          null,
+          {
+            Authorization: 'Bearer ' + auth.token,
+          }
         );
 
         setOrders(responseData.orders);

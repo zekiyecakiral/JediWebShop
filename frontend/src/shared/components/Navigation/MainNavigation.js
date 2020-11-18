@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
+import useStyles from '../../styles/material-ui-syles';
 import {
   Button,
   AppBar,
@@ -12,8 +13,6 @@ import {
 } from '@material-ui/core';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import { AuthContext } from '../../context/auth-context';
-import useStyles from '../../styles/material-ui-syles';
-
 import SideDrawer from './SideDrawer';
 
 import './MainNavigation.css';
@@ -123,8 +122,7 @@ const MainNavigation = (props) => {
 
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-
-          {auth.isLoggedIn && auth.isAdmin &&  (
+            {auth.isLoggedIn && auth.isAdmin && (
               <Button
                 color='inherit'
                 component={NavLink}
@@ -144,11 +142,11 @@ const MainNavigation = (props) => {
                   pathname: `/saber/order`,
                 }}
               >
-                {auth.isAdmin ? 'All Orders' : 'Your Orders' }
+                {auth.isAdmin ? 'All Orders' : 'Your Orders'}
               </Button>
             )}
 
-            {auth.isLoggedIn && auth.isAdmin &&  (
+            {auth.isLoggedIn && auth.isAdmin && (
               <Button
                 color='inherit'
                 component={NavLink}
@@ -159,7 +157,7 @@ const MainNavigation = (props) => {
                 NEW SABER
               </Button>
             )}
-            {auth.isLoggedIn && auth.isAdmin &&  (
+            {auth.isLoggedIn && auth.isAdmin && (
               <Button
                 color='inherit'
                 component={NavLink}
@@ -188,7 +186,7 @@ const MainNavigation = (props) => {
                 <div className={classes.root}>
                   <Avatar
                     alt='profile'
-                    // src={auth.userImage} 
+                    src="asdf"
                     aria-controls={menuId}
                     onClick={handleProfileMenuOpen}
                     className={classes.large}

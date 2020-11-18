@@ -1,18 +1,21 @@
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const fetch = require('node-fetch'); // for fetching data from facebook API
 const HttpError = require('../models/http-error');
 const User = require('../models/user');
-const { OAuth2Client } = require('google-auth-library'); //for google login
-const nodemailer = require('nodemailer');
-var generator = require('generate-password');
+
+const calculateSaber = require('../util/calculateSaber');
+
 
 const getUserById = async (req, res, next) => {
-  const userId = req.params.uid;
+
+  console.log('login user id al ');
+  const userId =  req.userData.userId;
+  console.log('login user id al ',req.userData.userId);
+
   let user;
   try {
-    user = await User.findById(userId, '-password');
+    user = await User.findById(userId);
   } catch (err) {
     const error = new HttpError(
       'Something went wrong, could not find a user.',
@@ -29,10 +32,13 @@ const getUserById = async (req, res, next) => {
     return next(error);
   }
 
-  res.json({ user: user.toObject({ getters: true }) });
+  const calculateSaberResult = calculateSaber(user.age);
+
+  res.json({ user: user,degree:calculateSaberResult.degree});
 };
 
 const updateUser = async (req, res, next) => {
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
@@ -41,7 +47,8 @@ const updateUser = async (req, res, next) => {
   }
   const { name, age } = req.body;
 
-  const userId = req.params.uid;
+  const userId =  req.userData.userId;
+
   let user;
   try {
     user = await User.findById(userId);
@@ -55,7 +62,10 @@ const updateUser = async (req, res, next) => {
 
   user.name = name;
   user.age = Number(age);
-  user.force=Number(age)*10;
+
+  const calculateSaberResult = calculateSaber(user.age);
+
+  user.force=calculateSaberResult.force;
 
   try {
     await user.save();
@@ -66,7 +76,7 @@ const updateUser = async (req, res, next) => {
     );
     return next(error);
   }
-  res.status(200).json({ user: user.toObject({ getters: true }) });
+  res.status(200).json({ user: user,degree:calculateSaberResult.degree});
 };
 
 const getUsers = async (req, res, next) => {
@@ -127,10 +137,12 @@ console.log('signup');
     return next(error);
   }
 
+  const calculateSaberResult = calculateSaber(age);
+
   const createdUser = new User({
     name,
     age,
-    force:age*10,
+    force:calculateSaberResult.force,
     email,
     password: hashedPassword,
     isAdmin:false
@@ -217,7 +229,7 @@ const login = async (req, res, next) => {
   let token;
   try {
     token = jwt.sign(
-      { userId: existingUser.id, email: existingUser.email },
+      { userId: existingUser.id,email: existingUser.email },
       process.env.JWT_KEY,
       { expiresIn: '1h' }
     );
@@ -234,7 +246,7 @@ const login = async (req, res, next) => {
     email: existingUser.email,
     token: token,
     force:existingUser.force,
-    isAdmin: existingUser.isAdmin, //this image is used to add auth context in frontend side
+    isAdmin: existingUser.isAdmin, 
   });
 };
 

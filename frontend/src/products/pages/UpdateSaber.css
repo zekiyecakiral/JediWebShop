@@ -1,0 +1,28 @@
+.container-edit-profile {
+    max-width: 40rem;
+    margin: 1rem auto;
+  }
+  
+  .user-container-profile {
+    margin: 10px;
+  }
+  .user-button {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  .success {
+    margin: 10px;
+  }
+  
+  .update-saber-form-image{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+  }

@@ -44,12 +44,20 @@ const UpdateUser = () => {
   );
 
   useEffect(() => {
+
+    console.log('update user');
     const fetchUser = async () => {
       try {
         const responseData = await sendRequest(
-          `${process.env.REACT_APP_BACKEND_URL}/users/${userId}`
+          `${process.env.REACT_APP_BACKEND_URL}/users/loginUser`,
+          'GET',null,
+
+          {
+            Authorization: 'Bearer ' + auth.token,
+          }
         );
-        setLoadedUser(responseData.user);
+        console.log('loaded user',responseData);
+        setLoadedUser(responseData);
         setFormData(
           {
             name: {
@@ -77,7 +85,7 @@ const UpdateUser = () => {
     event.preventDefault();
     try {
       const responseData = await sendRequest(
-        `${process.env.REACT_APP_BACKEND_URL}/users/${userId}`,
+        `${process.env.REACT_APP_BACKEND_URL}/users`,
         'PATCH',
         JSON.stringify({
           name: formState.inputs.name.value,
@@ -88,8 +96,9 @@ const UpdateUser = () => {
           Authorization: 'Bearer ' + auth.token,
         }
       );
+      console.log(responseData.user);
 
-      setLoadedUser(responseData.user);
+      setLoadedUser(responseData);
 
       setSuccessModal(true);
       setUserUpdate((prev) => !prev);
@@ -127,7 +136,7 @@ const UpdateUser = () => {
               onSubmit={userUpdateSubmitHandler}
             >
               <Typography variant='body2' color='textSecondary' component='p'>
-                {auth.isAdmin ? 'You are Jedi' : 'You are Padawan'}
+               You are {loadedUser.degree}
               </Typography>
 
               {!auth.isAdmin && (
@@ -139,7 +148,7 @@ const UpdateUser = () => {
                    fullWidth
                    disabled
                    onInput={inputHandler}
-                   initialValue=  {`${loadedUser.force}(F)`}
+                   initialValue=  {`${loadedUser.user.force}(F)`}
                    initialValid={true}
                  />
               )}
@@ -153,7 +162,7 @@ const UpdateUser = () => {
                 errorText='Please enter a valid title.'
                 fullWidth
                 onInput={inputHandler}
-                initialValue={loadedUser.name}
+                initialValue={loadedUser.user.name}
                 initialValid={true}
               />
 
@@ -165,7 +174,7 @@ const UpdateUser = () => {
                 validators={[VALIDATOR_REQUIRE()]}
                 errorText='Please enter a valid age.'
                 onInput={inputHandler}
-                initialValue={loadedUser.age}
+                initialValue={loadedUser.user.age}
                 initialValid={true}
                 fullWidth
               />

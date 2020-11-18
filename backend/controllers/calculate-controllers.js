@@ -17,12 +17,11 @@ const XMLParser = async (req, res, next) => {
   var parser = new xml2js.Parser({ explicitArray: false });
   parser.parseString(myFile.data, (err, result) => {
     if (err) {
-      const error = new HttpError('File could not be parsed', 500);
-      return next(error);
+      res.status(400).send({ error: "File could not be parsed" });
     }
 
     if (!result.sabers || !result.sabers.saber) {
-      res.status(400).send({ error: "'Invalid XML data!!'" });
+      res.status(400).send({ error: "Invalid XML data!!" });
     }
 
     result.sabers.saber.forEach((saber) => {
@@ -34,7 +33,7 @@ const XMLParser = async (req, res, next) => {
         !saber.crystal.name ||
         !saber.crystal.color
       ) {
-        res.status(400).send({ error: "'Invalid XML data!!'" });
+        res.status(400).send({ error: "Invalid XML data!!" });
       }
     });
 

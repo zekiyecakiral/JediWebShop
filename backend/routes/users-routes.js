@@ -1,14 +1,10 @@
 const express = require('express');
 const { check } = require('express-validator');
-
+const checkAuth = require('../middleware/check-auth');
 const usersController = require('../controllers/users-controllers');
-const fileUpload = require('../middleware/file-upload');
-
+  
 const router = express.Router();
 
-router.get('/', usersController.getUsers);
-
-router.get('/:uid', usersController.getUserById);
 
 router.post(
   '/signup',
@@ -24,19 +20,17 @@ router.post(
   usersController.signup
 );
 
+router.post('/login', usersController.login);
+
+router.use(checkAuth);
+
 router.patch(
-  '/:uid',
-  fileUpload.single('image'),
-  [
-    check('name')
-      .not()
-      .isEmpty()
-  ],
+  '/',
   usersController.updateUser
 );
 
+router.get('/', usersController.getUsers);
 
-router.post('/login', usersController.login);
-
+router.get('/loginUser', usersController.getUserById);
 
 module.exports = router;
