@@ -7,9 +7,7 @@ const User = require('../models/user');
 const calculateSaber = require('../util/calculateSaber');
 
 const createOrder = async (req, res, next) => {
-
   const saberId = req.params.id;
-
   let saber;
   try {
     saber = await Saber.findOne({ saberId: saberId }).populate('crystal');
@@ -20,6 +18,15 @@ const createOrder = async (req, res, next) => {
       500
     );
     return next(error);
+  }
+
+  if(!saber){
+    const error = new HttpError(
+      'Could not find saber by provided id!',
+      404
+    );
+    return next(error);
+  
   }
 
   let user;
@@ -38,11 +45,10 @@ const createOrder = async (req, res, next) => {
   const calculateSaberResult = calculateSaber(user.age, saber.crystal);
   const price = calculateSaberResult.price;
 
-
   const createdOrder = new Order({
     userId: req.userData.userId,
-    saberId:saber.id,
-    price:price,
+    saberId: saber.id,
+    price: price,
     createdAt: Date.now(),
   });
 
@@ -53,7 +59,7 @@ const createOrder = async (req, res, next) => {
     result = await createdOrder.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {
-    console.log(err)
+    console.log(err);
     const error = new HttpError(
       'Creating order failed, please try again.',
       500
@@ -62,7 +68,6 @@ const createOrder = async (req, res, next) => {
   }
 
   //after buy this order, reduce available!
-
   saber.available = saber.available - 1;
   if (saber.available < 0) {
     const error = new HttpError(
@@ -94,10 +99,7 @@ const createOrder = async (req, res, next) => {
 };
 
 const getOrdersByUserId = async (req, res, next) => {
-  console.log('get order by id');
   const userId = req.userData.userId;
-  console.log('userId', userId);
-
   try {
     await Order.find({ userId: userId })
       .lean()

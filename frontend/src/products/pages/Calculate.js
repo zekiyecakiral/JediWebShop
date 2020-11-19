@@ -180,7 +180,7 @@ const Calculate = () => {
                 </Typography>
               ) : result.price == 0 ? (
                 <Typography component='p' gutterBottom>
-                  You cannot allow to buy a saber light. Invalid input!
+                  You cannot allow to buy a saber light!
                 </Typography>
               ) : (
                 <>

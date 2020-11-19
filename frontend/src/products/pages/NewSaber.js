@@ -92,8 +92,6 @@ const NewSaber = () => {
   const saberSubmitHandler = async (event) => {
     event.preventDefault();
 
-    console.log(' new saber');
-
     try {
       const formData = new FormData();
       formData.append('id', formState.inputs.id.value);
@@ -114,7 +112,6 @@ const NewSaber = () => {
   };
 
   const saveXmlData = async () => {
-    console.log('kaydedeceklerim bunlar', readXmlData);
     const responseSaveXmlData = null;
     try {
       responseSaveXmlData = await sendRequest(

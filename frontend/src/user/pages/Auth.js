@@ -110,8 +110,6 @@ const Auth = () => {
         console.log('sign up ol!!',responseData.force);
 
         auth.login(responseData.userId, responseData.token,responseData.isAdmin,responseData.force);
-        
-        
       } catch (err) {}
     }
   };

@@ -2,7 +2,6 @@ const express = require('express');
 const sabersControllers = require('../controllers/sabers-controllers');
 const fileUpload = require('../middleware/file-upload');
 const checkAuth = require('../middleware/check-auth');
-const { check } = require('express-validator');
 
 const router = express.Router();
 

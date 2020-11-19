@@ -1,35 +1,36 @@
 import React from 'react';
-import {NavLink} from 'react-router-dom'
-import {Card,CardContent,Button,Typography} from "@material-ui/core";
+import { NavLink } from 'react-router-dom';
+import { Card, CardContent, Button, Typography } from '@material-ui/core';
 import SaberItem from './SaberItem';
 
 import './SaberList.css';
 
-const SaberList = props => {
-
+const SaberList = (props) => {
   if (props.items.length === 0) {
     return (
-      <div className="user-place-list">
+      <div className='user-place-list'>
         <Card>
-        <CardContent>
-        <Typography>No sabers found. Maybe create one?</Typography>
-        </CardContent>
-        <Button variant="contained" color="secondary"
-             component={NavLink}
+          <CardContent>
+            <Typography>No sabers found. Maybe create one?</Typography>
+          </CardContent>
+          <Button
+            variant='contained'
+            color='secondary'
+            component={NavLink}
             to={{
-              pathname: "/sabers/new",
+              pathname: '/sabers/new',
             }}
-        >New Saber</Button>
-       
+          >
+            New Saber
+          </Button>
         </Card>
       </div>
     );
   }
 
-
   return (
-    <ul className="user-place-list">
-      {props.items.map(saber => (
+    <ul className='user-place-list'>
+      {props.items.map((saber) => (
         <SaberItem
           key={saber._id}
           id={saber._id}
@@ -40,6 +41,8 @@ const SaberList = props => {
           crystal={saber.crystal}
           onDelete={props.onDeleteSaber}
           price={saber.price}
+          force={saber.force}
+          degree={saber.degree}
         />
       ))}
     </ul>

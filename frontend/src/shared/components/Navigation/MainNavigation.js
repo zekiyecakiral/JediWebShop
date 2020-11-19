@@ -122,7 +122,7 @@ const MainNavigation = (props) => {
 
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            {auth.isLoggedIn && auth.isAdmin && (
+            {auth.isLoggedIn && !auth.isAdmin && (
               <Button
                 color='inherit'
                 component={NavLink}

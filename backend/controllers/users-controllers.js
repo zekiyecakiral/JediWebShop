@@ -6,13 +6,9 @@ const User = require('../models/user');
 
 const calculateSaber = require('../util/calculateSaber');
 
-
 const getUserById = async (req, res, next) => {
 
-  console.log('login user id al ');
   const userId =  req.userData.userId;
-  console.log('login user id al ',req.userData.userId);
-
   let user;
   try {
     user = await User.findById(userId);
@@ -249,8 +245,6 @@ const login = async (req, res, next) => {
     isAdmin: existingUser.isAdmin, 
   });
 };
-
-
 
 exports.updateUser = updateUser;
 exports.getUserById = getUserById;

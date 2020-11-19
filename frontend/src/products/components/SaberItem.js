@@ -134,13 +134,20 @@ const SaberItem = (props) => {
                   Crystal Color: {props.crystal.color}
                 </Typography>
                 {auth.isAdmin && (
-                  <Typography variant='body2' color='textSecondary' component='p'>
+                  <Typography
+                    variant='body2'
+                    color='textSecondary'
+                    component='p'
+                  >
                     Available : {props.available}
                   </Typography>
                 )}
                 {!auth.isAdmin && (
                   <Typography variant='body2' gutterBottom>
-                    Price : $$ {props.price}
+                    {props.price === 0 ?  props.degree  :
+                    `Price : $$ ${props.price}`
+                    }
+                   
                   </Typography>
                 )}
               </CardContent>

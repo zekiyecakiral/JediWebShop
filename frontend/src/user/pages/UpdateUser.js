@@ -39,6 +39,10 @@ const UpdateUser = () => {
         value: '',
         isValid: false,
       },
+      token:{
+        value: '',
+        isValid: false,
+      }
     },
     false
   );
@@ -138,6 +142,18 @@ const UpdateUser = () => {
               <Typography variant='body2' color='textSecondary' component='p'>
                You are {loadedUser.degree}
               </Typography>
+
+              <Input
+                   id='token'
+                   element='input'
+                   type='text'
+                   label='Your token'
+                   fullWidth
+                   disabled
+                   onInput={inputHandler}
+                   initialValue= {auth.token}
+                   initialValid={true}
+                 />
 
               {!auth.isAdmin && (
                    <Input

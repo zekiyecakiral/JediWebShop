@@ -1,5 +1,4 @@
 import React, { useEffect, useState ,useContext} from 'react';
-import { useParams } from 'react-router-dom';
 import SaberList from '../components/SaberList';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
@@ -14,7 +13,6 @@ const Sabers = () => {
 
   useEffect(() => {
 
-    console.log('userId degeri',userId);
     const fetchPlaces = async () => {
       try {
         const responseData = await sendRequest(
@@ -27,7 +25,6 @@ const Sabers = () => {
         );
         setLoadedSabers(responseData.sabers);
 
-          console.log('sabers',responseData.sabers);
 
       } catch (err) {}
     };

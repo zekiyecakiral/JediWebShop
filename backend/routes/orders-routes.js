@@ -4,7 +4,6 @@ const checkAuth = require('../middleware/check-auth');
 
 const router = express.Router();
 
-
 router.use(checkAuth);
 
 router.get('/', ordersControllers.getAllOrders);
@@ -15,7 +14,6 @@ router.post(
   '/:id',
   ordersControllers.createOrder
 );
-
 
 
 module.exports = router;

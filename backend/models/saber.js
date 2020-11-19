@@ -11,4 +11,7 @@ const saberSchema = new Schema({
 });
 
 saberSchema.index({ saberId: 1}, { unique: true });
+
+
 module.exports = mongoose.model('Saber', saberSchema);
+
